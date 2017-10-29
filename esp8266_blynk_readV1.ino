@@ -33,12 +33,12 @@
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = "19f669ee9f7740ffac9bdf17350a6553";
+char auth[] = "<auth>";
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "macross2010";
-char pass[] = "qswdefrgthyjukil";
+char ssid[] = "<SSID>";
+char pass[] = "<Password>";
 int T1=22,T2=50,i=0,Count=1,Start_Button=0,Freerun_Button=0,tickPin=D1,End_time=0,Start_time=0,Run_time=0;
 
 // This function will be called every time Slider Widget
@@ -131,7 +131,7 @@ void setup()
 //  Blynk.begin(auth, ssid, pass);
   // You can also specify server:
   //Blynk.begin(auth, ssid, pass, "blynk-cloud.com", 8442);
-  Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,251), 8442);
+  Blynk.begin(auth, ssid, pass, IPAddress(<local_IP>), 8442);
 }
 
 void loop()
