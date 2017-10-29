@@ -39,7 +39,7 @@ char auth[] = "19f669ee9f7740ffac9bdf17350a6553";
 // Set password to "" for open networks.
 char ssid[] = "macross2010";
 char pass[] = "qswdefrgthyjukil";
-int T1=22,T2=50,Count=1,Button=0,tickPin=D1;
+int T1=22,T2=50,i=0,Count=1,Start_Button=0,Freerun_Button=0,tickPin=D1,End_time=0,Start_time=0,Run_time=0;
 
 // This function will be called every time Slider Widget
 // in Blynk app writes values to the Virtual Pin V1
@@ -77,9 +77,18 @@ BLYNK_WRITE(V3)
 BLYNK_WRITE(V4)
 {
   int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
-  Button = pinValue;
-  Serial.print("Button=");
-  Serial.println(Button);
+  Start_Button = pinValue;
+  Serial.print("Start_Button=");
+  Serial.println(Start_Button);
+  // process received value
+}
+
+BLYNK_WRITE(V5)
+{
+  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  Freerun_Button = pinValue;
+  Serial.print("Freerun_Button=");
+  Serial.println(Freerun_Button);
   // process received value
 }
 
@@ -95,6 +104,20 @@ void tickLow(){
   digitalWrite(tickPin, HIGH);
   delay(T1);
   digitalWrite(tickPin, LOW);
+}
+
+void Counter()
+{
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  Blynk.virtualWrite(6, i);
+}
+
+void RunTime(int Run_time)
+{
+  Blynk.virtualWrite(7,Run_time);
+  Serial.println(Run_time);
+  
 }
 
 void setup()
@@ -114,16 +137,41 @@ void setup()
 void loop()
 {
   Blynk.run();
-  if (Button == 1) {
-  for (int i=0; i<Count;i++) {  
-  tickHigh();
-  delay(T2);
-  tickLow();
-  delay(T2);
-  Serial.println(i);
+  if (Start_Button == 1) {
+    Start_time=millis();
+    RunTime(0);
+    if (Freerun_Button == 1){
+        tickHigh();
+        delay(T2);
+        tickLow();
+        delay(T2);
+        i=i+1;
+        Serial.println(i);
+    }
+    else
+    {
+    for (int i=0; i<Count;i++) {  
+        tickHigh();
+        delay(T2);
+        tickLow();
+        delay(T2);
+        Serial.println(i);
+    }
+    End_time=millis();
+    Run_time=End_time-Start_time;
+    RunTime(Run_time);
+    Start_Button = 0;
+    }
   }
-  Button=0;
+  else
+  if (i!=0) {
+    Counter();
+    End_time=millis();
+    Run_time=End_time-Start_time;
+    RunTime(Run_time);
+    i=0;
   }
 }
+
 
 
